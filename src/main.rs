@@ -1,7 +1,6 @@
 use std::fs;
 
 fn main() {
-    println!("Getting declension of all nouns that end with is.");
     let values = get_all_is_words();
     let only_third = values.iter().filter(|(_, t)| *t == "3");
     for (word, _) in only_third.collect::<Vec<&(String, &str)>>() {
@@ -12,6 +11,7 @@ fn main() {
 fn get_all_is_words<'a>() -> Vec<(String, &'a str)> {
     let specific_is = [
         ("io", "1"),
+        ("iu", "1"),
         ("ies", "3"),
         ("imi", "3"),
         ("ie", "3"),
@@ -26,7 +26,7 @@ fn get_all_is_words<'a>() -> Vec<(String, &'a str)> {
     let mut word_data = Vec::new();
     let mut last_lemma = "";
 
-    let file_data = fs::read_to_string("word_data/dazninis").unwrap();
+    let file_data = fs::read_to_string("source_data/dazninis").unwrap();
     let mut skip_future = false;
 
     for line in file_data.lines() {
