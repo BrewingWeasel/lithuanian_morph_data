@@ -1,11 +1,34 @@
-use std::fs;
+use std::{collections::HashMap, fs};
 
 fn main() {
-    let values = get_all_is_words();
-    let only_third = values.iter().filter(|(_, t)| *t == "3");
-    for (word, _) in only_third.collect::<Vec<&(String, &str)>>() {
-        println!("{word}")
+    let vals = all_of_each_type();
+    for i in &vals["N"] {
+        println!("{i}");
     }
+}
+
+fn all_of_each_type<'a>() -> HashMap<String, Vec<String>> {
+    let mut map: HashMap<String, Vec<String>> = HashMap::new();
+    let file_data = fs::read_to_string("source_data/JCL_lemmas.txt").unwrap();
+    let mut last_word = "";
+    map.insert(String::from("MULT"), Vec::new());
+
+    for line in file_data.lines() {
+        let mut values = line.split('\t');
+        let word = values.next().unwrap();
+        if word == last_word {
+            map.entry(String::from("MULT"))
+                .and_modify(|x| x.push(word.to_owned()));
+            continue;
+        } else {
+            last_word = word;
+        }
+        let pos = values.next().unwrap();
+        map.entry(pos.to_owned())
+            .and_modify(|x| x.push(word.to_owned()))
+            .or_insert(vec![word.to_owned()]);
+    }
+    map
 }
 
 fn get_all_is_words<'a>() -> Vec<(String, &'a str)> {
